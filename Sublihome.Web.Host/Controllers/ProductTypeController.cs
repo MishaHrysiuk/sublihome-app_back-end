@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sublihome.Application.Dto.Products;
 using Sublihome.Application.ProductTypes;
@@ -33,6 +34,7 @@ namespace Sublihome.Web.Host.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("CreateProductType")]
         public async Task Create(NewProductTypeDto newProductTypeDto)
         {
@@ -40,6 +42,7 @@ namespace Sublihome.Web.Host.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         [Route("DeleteProductType")]
         public async Task Delete(int productTypeId)
         {

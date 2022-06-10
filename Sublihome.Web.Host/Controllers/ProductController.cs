@@ -11,6 +11,7 @@ namespace Sublihome.Web.Host.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -28,7 +29,6 @@ namespace Sublihome.Web.Host.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "UserIsAdmin")]
         [Route("AddPictureToProduct")]
         public async Task AddPicture(int productId, IFormFile file)
         {
@@ -36,7 +36,7 @@ namespace Sublihome.Web.Host.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "UserIsAdmin")]
+        [AllowAnonymous]
         [Route("GetProduct")]
         public async Task<ProductDto> GetProductById(int productId)
         {
@@ -44,6 +44,7 @@ namespace Sublihome.Web.Host.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("GetAllProducts")]
         public async Task<List<ProductDto>> GetAllProducts()
         {
@@ -51,6 +52,7 @@ namespace Sublihome.Web.Host.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("DownloadPictureFromProduct")]
         public async Task<FileContentResult> DownloadPicture(int productId)
         {
