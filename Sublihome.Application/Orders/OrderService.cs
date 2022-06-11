@@ -22,6 +22,7 @@ namespace Sublihome.Application.Orders
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<OrderProducts> _orderProductsRepository;
         private readonly IRepository<Product> _productRepository;
+        private readonly IRepository<OrderStatus> _orderStatusRepository;
         private readonly ICartService _cartService;
 
         public OrderService(
@@ -30,7 +31,8 @@ namespace Sublihome.Application.Orders
             IRepository<Order> orderRepository,
             IRepository<OrderProducts> productsRepository,
             ICartService cartService,
-            IRepository<Product> productRepository)
+            IRepository<Product> productRepository,
+            IRepository<OrderStatus> orderStatusRepository)
         {
             _logger = logger;
             _mapper = mapper;
@@ -38,6 +40,7 @@ namespace Sublihome.Application.Orders
             _orderProductsRepository = productsRepository;
             _cartService = cartService;
             _productRepository = productRepository;
+            _orderStatusRepository = orderStatusRepository;
         }
         public async Task ChangeOrderStatus(int orderId, int orderStatus)
         {
@@ -108,15 +111,20 @@ namespace Sublihome.Application.Orders
         public async Task<List<OrdersDto>> GetOrders(int userId)
         {
             var allOrdersWithItems = new List<OrdersDto>();
+            var count = 0;
 
             var orders = await _orderRepository.GetAll()
                 .Where(x => x.UserId == userId)
                 .Select(x => x.Id)
                 .ToListAsync();
 
+            var orderStatuses = await _orderRepository.GetAll()
+                .Where(x => x.UserId == userId)
+                .Select(x => x.StatusId)
+                .ToListAsync();
+
             foreach (var orderId in orders)
             {
-                var count = 0;
                 decimal totalPriceOfOrder = 0;
 
                 var allOrderItemsIds = await _orderProductsRepository.GetAll()
@@ -139,7 +147,8 @@ namespace Sublihome.Application.Orders
                     Order = orderId,
                     ProductIds = allOrderItemsIds,
                     ProductsCount = allOrderItemsCounts,
-                    TotalPriceOfOrder = orderPrice
+                    TotalPriceOfOrder = orderPrice,
+                    StatusId = orderStatuses[count++]
                 };
 
                 allOrdersWithItems.Add(orderWitItems);

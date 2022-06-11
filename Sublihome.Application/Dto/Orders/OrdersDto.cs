@@ -8,6 +8,8 @@ namespace Sublihome.Application.Dto.Orders
     {
         public int Order { get; set; }
 
+        public int StatusId { get; set; }
+
         public List<int> ProductIds { get; set; }
 
         public List<int> ProductsCount { get; set; }

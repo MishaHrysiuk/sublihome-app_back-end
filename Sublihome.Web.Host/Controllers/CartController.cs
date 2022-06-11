@@ -35,6 +35,7 @@ namespace Sublihome.Web.Host.Controllers
         }
 
         [HttpDelete]
+        [AllowAnonymous]
         [Route("ClearCart")]
         public async Task ClearCartItems(int userId)
         {
