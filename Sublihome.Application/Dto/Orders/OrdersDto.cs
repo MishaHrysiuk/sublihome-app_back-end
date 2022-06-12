@@ -12,6 +12,8 @@ namespace Sublihome.Application.Dto.Orders
 
         public List<int> ProductIds { get; set; }
 
+        public List<string> ProductsNames { get; set; }
+
         public List<int> ProductsCount { get; set; }
 
         public decimal TotalPriceOfOrder { get; set; }

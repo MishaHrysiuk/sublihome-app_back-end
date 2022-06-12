@@ -33,19 +33,24 @@ namespace Sublihome.Web.Host
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //реєструє сервіс для роботи БД
             services.AddDbContext<SublihomeDbContext>(options =>
             {
                 options.UseMySql(Configuration.GetConnectionString("Default"));
             }, ServiceLifetime.Transient);
 
+            //реєстрація сервісів DI App
             services.RegisterApplicationServices();
 
+            //зчитує інфу для старта
             var optionsAuthConfig = Configuration.GetSection("Authentication");
 
+            //настроує токен
             services.Configure<AuthToken>(optionsAuthConfig);
 
             var optionsAuth = Configuration.GetSection("Authentication").Get<AuthToken>();
 
+            //як проводится аутентифікація
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -65,6 +70,7 @@ namespace Sublihome.Web.Host
                     };
                 });
 
+            //крос доменні запроси
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
@@ -75,6 +81,7 @@ namespace Sublihome.Web.Host
                 });
             });
 
+            //конфігурація Сваггера
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -85,11 +92,14 @@ namespace Sublihome.Web.Host
                 });
             });
 
+            //шось воно рішає проблему
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); ;
         }
 
+        //реєстрація сервісів 
+        //порядок має значення
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseSwagger();
@@ -99,6 +109,8 @@ namespace Sublihome.Web.Host
                 options.SwaggerEndpoint("v1/swagger.json", "Swagger.V1.Sublihome.API");
             });
 
+            //середовище розробки
+            //свагерр її перебиває
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -116,6 +128,7 @@ namespace Sublihome.Web.Host
 
             app.UseAuthorization();
 
+            //конролерри які ми використовуєм
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

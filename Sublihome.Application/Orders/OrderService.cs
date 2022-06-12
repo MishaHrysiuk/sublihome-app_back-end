@@ -129,8 +129,16 @@ namespace Sublihome.Application.Orders
 
                 var allOrderItemsIds = await _orderProductsRepository.GetAll()
                     .Where(x => x.OrderId.Equals(orderId))
-                    .Select(x => x.ProductId)
+                    .Include(x => x.Product)
                     .ToListAsync();
+
+                var orderItemsIds = allOrderItemsIds
+                    .Select(x => x.ProductId)
+                    .ToList();
+
+                var orderItems = allOrderItemsIds
+                    .Select(x => x.Product.Name)
+                    .ToList();
 
                 var allOrderItemsCounts = await _orderProductsRepository.GetAll()
                     .Where(x => x.OrderId.Equals(orderId))
@@ -145,7 +153,8 @@ namespace Sublihome.Application.Orders
                 var orderWitItems = new OrdersDto
                 {
                     Order = orderId,
-                    ProductIds = allOrderItemsIds,
+                    ProductIds = orderItemsIds,
+                    ProductsNames = orderItems,
                     ProductsCount = allOrderItemsCounts,
                     TotalPriceOfOrder = orderPrice,
                     StatusId = orderStatuses[count++]

@@ -6,7 +6,7 @@ namespace Sublihome.Data.Entities.Orders
 {
     public enum OrderStatusEnum
     {
-        Pending = 0,
+        Pending = 1,
         Approved,
         Rejected
     }
